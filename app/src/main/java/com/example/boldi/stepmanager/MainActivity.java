@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +26,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Database db = new Database(this);
 
-
+        Button randomData = (Button) findViewById(R.id.randomData);
+        randomData.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Database db = new Database(getApplicationContext());
+                        db.UploadWithUnrealData( new int[]{120,150,960,6281});
+                    }
+                }
+        );
         TextView stepcount = (TextView) findViewById(R.id.steps);
         Intent i = new Intent(this,StepListener.class);
         startService(i);
         Calendar.getInstance().getTime();
-        String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance().getTime()));
+        String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance()));
         Toast.makeText(this, asd, Toast.LENGTH_SHORT).show();
-        Database db = new Database(this);
         String steps = String.valueOf(db.getTodayStep());
         stepcount.setText(steps);
         //stepcount.setText(db.getTodayStep());

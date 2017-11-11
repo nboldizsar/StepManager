@@ -22,12 +22,15 @@ public class StepListener extends Service implements SensorEventListener {
     boolean activityRunning;
     Database db;
 
-    public StepListener() {
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("StepListener","on start");
+        return Service.START_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         activityRunning = true;
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -39,7 +42,6 @@ public class StepListener extends Service implements SensorEventListener {
             Toast.makeText(this,"Sensor is not available",Toast.LENGTH_LONG).show();
         }
         db = new Database(this);
-        return Service.START_STICKY;
     }
 
     @Override

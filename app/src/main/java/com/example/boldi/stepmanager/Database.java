@@ -39,22 +39,31 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void saveStep(int step){
-        int date = DateToIntConverter.DateToInt(Calendar.getInstance().getTime());
+        int date = DateToIntConverter.DateToInt(Calendar.getInstance());
         Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date","steps"},"date = ?", new String[]{String.valueOf(date)},null,null,null);
         if (c.getCount() == 0){
             getWritableDatabase().execSQL("INSERT INTO "+DB_NAME+" VALUES("+date+","+step+")");
         }else{
             c.moveToFirst();
             if (c.getInt(1) > step){
-                step += c.getInt(1);
+                step = c.getInt(1)+1;
             }
             getWritableDatabase().execSQL("UPDATE "+DB_NAME+" SET steps = "+step+" WHERE date = "+date);
         }
 
 
     }
+    public void saveRandomStep(int step, int date) {
+        Cursor c = getReadableDatabase().query(DB_NAME, new String[]{"date", "steps"}, "date = ?", new String[]{String.valueOf(date)}, null, null, null);
+        if (c.getCount() == 0) {
+            getWritableDatabase().execSQL("INSERT INTO " + DB_NAME + " VALUES(" + date + "," + step + ")");
+        } else {
+            getWritableDatabase().execSQL("UPDATE " + DB_NAME + " SET steps = " + step + " WHERE date = " + date);
+        }
+    }
+
     public int getTodayStep(){
-        int date = DateToIntConverter.DateToInt(Calendar.getInstance().getTime());
+        int date = DateToIntConverter.DateToInt(Calendar.getInstance());
         Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},"date = ?", new String[]{String.valueOf(date)},null,null,null);
         c.moveToFirst();
         int ret = 0;
@@ -63,6 +72,14 @@ public class Database extends SQLiteOpenHelper {
         }
         return ret;
     }
-
+    public void UploadWithUnrealData(int[] stepsOfDay){
+        int dayMinus = stepsOfDay.length;
+        Calendar c = Calendar.getInstance();
+               c.add(Calendar.DAY_OF_MONTH, -(dayMinus+1));
+        for (int i = 0; i < dayMinus; i++){
+            c.add(Calendar.DAY_OF_MONTH, i);
+            saveRandomStep(stepsOfDay[i],DateToIntConverter.DateToInt(c));
+        }
+    }
 
 }

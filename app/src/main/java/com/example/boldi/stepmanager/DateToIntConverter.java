@@ -1,5 +1,6 @@
 package com.example.boldi.stepmanager;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -7,20 +8,20 @@ import java.util.Date;
  */
 
 public final class DateToIntConverter {
-    public static int DateToInt(Date date){
+    public static int DateToInt(Calendar date){
         String dateint = "";
-        dateint += date.getYear();
-        dateint += date.getMonth();
-        dateint += date.getDay();
+        dateint += date.get(Calendar.YEAR);
+        dateint += date.get(Calendar.MONTH);
+        dateint += date.get(Calendar.DAY_OF_MONTH);
         return Integer.parseInt(dateint);
     }
-    public static Date IntToDate(int dateint){
-        Date date = new Date(1995,10,14);
+    public static Calendar IntToDate(int dateint){
+        Calendar date = Calendar.getInstance();
         if(dateint >10000000 || dateint <99999999){
             String datestring =String.valueOf(dateint);
-            date.setYear(Integer.parseInt(datestring.substring(0,3)));
-            date.setMonth(Integer.parseInt(datestring.substring(4,5)));
-            date.setDate(Integer.parseInt(datestring.substring(6,7)));
+            date.set(Calendar.YEAR,Integer.parseInt(datestring.substring(0,3)));
+            date.set(Calendar.MONTH,Integer.parseInt(datestring.substring(4,5)));
+            date.set(Calendar.DAY_OF_MONTH,Integer.parseInt(datestring.substring(6,7)));
         }
         return date;
     }
