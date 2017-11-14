@@ -37,7 +37,7 @@ public class Database extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
-
+    //TODO a frissítést úgy kellene csinálni, hogy nem minden egyes lépésre, csak bizonos időközönként, vagy egy adott lépésszám után
     public void saveStep(int step){
         int date = DateToIntConverter.DateToInt(Calendar.getInstance());
         Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date","steps"},"date = ?", new String[]{String.valueOf(date)},null,null,null);
@@ -45,14 +45,13 @@ public class Database extends SQLiteOpenHelper {
             getWritableDatabase().execSQL("INSERT INTO "+DB_NAME+" VALUES("+date+","+step+")");
         }else{
             c.moveToFirst();
-            if (c.getInt(1) > step){
-                step = c.getInt(1)+1;
-            }
+            step = c.getInt(1) +1;
             getWritableDatabase().execSQL("UPDATE "+DB_NAME+" SET steps = "+step+" WHERE date = "+date);
         }
 
 
     }
+    //just for debugging
     public void saveRandomStep(int step, int date) {
         Cursor c = getReadableDatabase().query(DB_NAME, new String[]{"date", "steps"}, "date = ?", new String[]{String.valueOf(date)}, null, null, null);
         if (c.getCount() == 0) {
