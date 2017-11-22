@@ -49,13 +49,16 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         TextView stepcount = (TextView) findViewById(R.id.steps);
+        TextView kcalcount = (TextView) findViewById(R.id.kcalText);
         Intent i = new Intent(this,StepListener.class);
         startService(i);
         Calendar.getInstance().getTime();
         String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance()));
         Toast.makeText(this, asd, Toast.LENGTH_SHORT).show();
         String steps = String.valueOf(db.getTodayStep());
+        String kcal = String.valueOf(db.getTodayStep() / 27);
         stepcount.setText(steps);
+        kcalcount.setText(kcal + " kcal");
         //stepcount.setText(db.getTodayStep());
 
         Thread t = new Thread() {
@@ -72,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
                                 TextView stepcount = (TextView) findViewById(R.id.steps);
                                 String steps = String.valueOf(db.getTodayStep());
                                 stepcount.setText(steps);
+
+                                TextView kcalcount = (TextView) findViewById(R.id.kcalText);
+                                String kcal = String.valueOf(db.getTodayStep() / 27);
+                                kcalcount.setText(kcal + " kcal");
                             }
                         });
                     }
