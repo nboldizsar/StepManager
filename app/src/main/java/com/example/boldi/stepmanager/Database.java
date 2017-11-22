@@ -104,5 +104,28 @@ public class Database extends SQLiteOpenHelper {
     public void resetAllData(){
         getWritableDatabase().execSQL("UPDATE " + DB_NAME + " SET steps = 0 WHERE date IS NOT -1");
     }
+    public int getAvarageSteps(){
+        int all = 0;
+        Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},"date IS NOT ?", new String[]{String.valueOf(-1)},null,null,null);
+        c.moveToFirst();
+        int days =0;
+        for (int i = 0; i < c.getCount(); i++){
+            if (c.getInt(1) > 0)
+                days ++;
+            all += c.getInt(1);
+            c.moveToNext();
+        }
+        return (days > 0)? all / days : 0;
+    }
+    public int getTotalSteps(){
+        int all = 0;
+        Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},"date IS NOT ?", new String[]{String.valueOf(-1)},null,null,null);
+        c.moveToFirst();
+        for (int i = 0; i < c.getCount(); i++){
+            all += c.getInt(1);
+            c.moveToNext();
+        }
+        return all;
+    }
 
 }

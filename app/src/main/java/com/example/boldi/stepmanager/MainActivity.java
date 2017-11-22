@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateUtils;
@@ -12,8 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
@@ -21,12 +29,23 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
+    PieChart pieChart;
+    TextView average;
+    TextView total;
+    Database db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Database db = new Database(this);
+        db = new Database(this);
+
+        pieChart = (PieChart) findViewById(R.id.pieChart);
+        pieChart.setHoleRadius(90f);
+        pieChart.setCenterTextSize(30);
+        pieChart.setDragDecelerationEnabled(false);
+        pieChart.setTouchEnabled(false);
+        addDataSet(0,1000);
 
         Button randomData = (Button) findViewById(R.id.randomData);
         Button reset = (Button) findViewById(R.id.reset);
@@ -34,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Database db = new Database(getApplicationContext());
                         db.UploadWithUnrealData( new int[]{120,150,960,6281});
                     }
                 }
@@ -43,19 +61,19 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Database db = new Database(getApplicationContext());
                         db.resetAllData();
                     }
                 }
         );
-        TextView stepcount = (TextView) findViewById(R.id.steps);
+
+        average = (TextView) findViewById(R.id.average);
+        total = (TextView) findViewById(R.id.total);
         Intent i = new Intent(this,StepListener.class);
         startService(i);
         Calendar.getInstance().getTime();
         String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance()));
         Toast.makeText(this, asd, Toast.LENGTH_SHORT).show();
         String steps = String.valueOf(db.getTodayStep());
-        stepcount.setText(steps);
         //stepcount.setText(db.getTodayStep());
 
         Thread t = new Thread() {
@@ -68,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Database db = new Database(getApplicationContext());
-                                TextView stepcount = (TextView) findViewById(R.id.steps);
+                                average.setText(String.valueOf(db.getAvarageSteps()));
+                                total.setText(String.valueOf(db.getTotalSteps()));
                                 String steps = String.valueOf(db.getTodayStep());
-                                stepcount.setText(steps);
+                                addDataSet(Integer.parseInt(steps),1000);
                             }
                         });
                     }
@@ -81,6 +99,32 @@ public class MainActivity extends AppCompatActivity {
         };
 
         t.start();
+
+    }
+
+    private void addDataSet(int steps, int goal) {
+
+        pieChart.setCenterText((String.valueOf(steps)+" / "+String.valueOf(goal)));
+        ArrayList<PieEntry> entry = new ArrayList<>();
+        ArrayList<String> data = new ArrayList<>();
+
+        entry.add(new PieEntry(steps,0));
+        entry.add(new PieEntry(goal,1));
+
+        PieDataSet dataset = new PieDataSet(entry,"Steps");
+        dataset.setSliceSpace(2f);
+        dataset.setValueTextSize(0f);
+
+        Legend legend = pieChart.getLegend();
+        legend.setForm(Legend.LegendForm.CIRCLE);
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add(Color.GREEN);
+        colors.add(Color.RED);
+        dataset.setColors(colors);
+
+        PieData pieData = new PieData(dataset);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
 
     }
 
