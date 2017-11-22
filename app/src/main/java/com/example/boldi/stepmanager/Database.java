@@ -39,13 +39,20 @@ public class Database extends SQLiteOpenHelper {
     }
     //TODO a frissítést úgy kellene csinálni, hogy nem minden egyes lépésre, csak bizonos időközönként, vagy egy adott lépésszám után
     public void saveStep(int step){
+        int stepsTillBoot = getTillBootStep();
+        if (stepsTillBoot > step){
+            saveTillBootStep(step);
+        }else{
+            saveTillBootStep(step);
+            step -= stepsTillBoot;
+        }
         int date = DateToIntConverter.DateToInt(Calendar.getInstance());
         Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date","steps"},"date = ?", new String[]{String.valueOf(date)},null,null,null);
         if (c.getCount() == 0){
             getWritableDatabase().execSQL("INSERT INTO "+DB_NAME+" VALUES("+date+","+step+")");
         }else{
             c.moveToFirst();
-            step = c.getInt(1) +1;
+            step+= c.getInt(1);
             getWritableDatabase().execSQL("UPDATE "+DB_NAME+" SET steps = "+step+" WHERE date = "+date);
         }
 
@@ -71,6 +78,20 @@ public class Database extends SQLiteOpenHelper {
         }
         return ret;
     }
+    public int getTillBootStep(){
+        Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},"date = ?", new String[]{String.valueOf(-1)},null,null,null);
+        c.moveToFirst();
+        int ret = 0;
+        if (c.getCount()!= 0){
+            ret = c.getInt(1);
+        }else{
+            getWritableDatabase().execSQL("INSERT INTO " + DB_NAME + " VALUES(" + -1 + "," + (int)0 + ")");
+        }
+        return ret;
+    }
+    public void saveTillBootStep(int value){
+        getWritableDatabase().execSQL("UPDATE " + DB_NAME + " SET steps = " + value + " WHERE date = " + -1);
+    }
     public void UploadWithUnrealData(int[] stepsOfDay){
         int dayMinus = stepsOfDay.length;
         Calendar c = Calendar.getInstance();
@@ -79,6 +100,9 @@ public class Database extends SQLiteOpenHelper {
             c.add(Calendar.DAY_OF_MONTH, i);
             saveRandomStep(stepsOfDay[i],DateToIntConverter.DateToInt(c));
         }
+    }
+    public void resetAllData(){
+        getWritableDatabase().execSQL("UPDATE " + DB_NAME + " SET steps = 0 WHERE date IS NOT -1");
     }
 
 }

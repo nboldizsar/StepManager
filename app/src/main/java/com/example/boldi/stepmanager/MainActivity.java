@@ -29,12 +29,22 @@ public class MainActivity extends AppCompatActivity {
         Database db = new Database(this);
 
         Button randomData = (Button) findViewById(R.id.randomData);
+        Button reset = (Button) findViewById(R.id.reset);
         randomData.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Database db = new Database(getApplicationContext());
                         db.UploadWithUnrealData( new int[]{120,150,960,6281});
+                    }
+                }
+        );
+        reset.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Database db = new Database(getApplicationContext());
+                        db.resetAllData();
                     }
                 }
         );

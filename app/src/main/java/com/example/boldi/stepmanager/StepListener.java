@@ -15,8 +15,8 @@ import android.widget.Toast;
 public class StepListener extends Service implements SensorEventListener {
     int steps;
     int lastSavedSteps;
-    int lastSavedTime;
-    private static final int saveRateSteps = 500;
+    long lastSavedTime;
+    private static final int saveRateSteps = 1;
     private static final long saveRateTime =  AlarmManager.INTERVAL_HOUR;
     SensorManager sensorManager;
     boolean activityRunning;
@@ -61,18 +61,13 @@ public class StepListener extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.values[0] < Integer.MAX_VALUE){
-            //steps = (int) event.values[0];
-            //Update();
-        }
-        if(true){
-            String asd = "";
-            for (int i = 0;i< event.values.length;i++) {
-                asd += event.values[i];
+        if (event.values[0] < Integer.MAX_VALUE) {
+            if (event.values[0] > lastSavedSteps + saveRateSteps || System.currentTimeMillis() > lastSavedTime + saveRateTime) {
+                db.saveStep((int) event.values[0]);
+                lastSavedTime = System.currentTimeMillis();
+                lastSavedSteps = (int) event.values[0];
             }
-            Log.i("step", String.valueOf(event.values[0]));
         }
-        db.saveStep((int) event.values[0]);
     }
 
     @Override
