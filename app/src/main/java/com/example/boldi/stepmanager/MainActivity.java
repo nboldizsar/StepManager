@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -68,12 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
         average = (TextView) findViewById(R.id.average);
         total = (TextView) findViewById(R.id.total);
+        //TextView stepcount = (TextView) findViewById(R.id.steps);
+        TextView kcalcount = (TextView) findViewById(R.id.kcalText);
         Intent i = new Intent(this,StepListener.class);
         startService(i);
         Calendar.getInstance().getTime();
         String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance()));
         Toast.makeText(this, asd, Toast.LENGTH_SHORT).show();
         String steps = String.valueOf(db.getTodayStep());
+        String kcal = String.valueOf(db.getTodayStep() / 27);
+        //stepcount.setText(steps);
+        kcalcount.setText(kcal + " kcal");
         //stepcount.setText(db.getTodayStep());
 
         Thread t = new Thread() {
@@ -90,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
                                 total.setText(String.valueOf(db.getTotalSteps()));
                                 String steps = String.valueOf(db.getTodayStep());
                                 addDataSet(Integer.parseInt(steps),1000);
+                                //stepcount.setText(steps);
+
+                                TextView kcalcount = (TextView) findViewById(R.id.kcalText);
+                                String kcal = String.valueOf(db.getTodayStep() / 27);
+                                kcalcount.setText(kcal + " kcal");
                             }
                         });
                     }
@@ -128,4 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar1, menu);
+        return true;
+    }
 }
