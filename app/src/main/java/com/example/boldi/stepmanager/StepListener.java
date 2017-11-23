@@ -16,7 +16,7 @@ public class StepListener extends Service implements SensorEventListener {
     int steps;
     int lastSavedSteps;
     long lastSavedTime;
-    private static final int saveRateSteps = 1;
+    private static final int saveRateSteps = 0;
     private static final long saveRateTime =  AlarmManager.INTERVAL_HOUR;
     SensorManager sensorManager;
     boolean activityRunning;

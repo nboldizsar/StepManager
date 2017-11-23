@@ -55,6 +55,7 @@ public class Database extends SQLiteOpenHelper {
             step+= c.getInt(1);
             getWritableDatabase().execSQL("UPDATE "+DB_NAME+" SET steps = "+step+" WHERE date = "+date);
         }
+        c.close();
 
 
     }
@@ -66,6 +67,7 @@ public class Database extends SQLiteOpenHelper {
         } else {
             getWritableDatabase().execSQL("UPDATE " + DB_NAME + " SET steps = " + step + " WHERE date = " + date);
         }
+        c.close();
     }
 
     public int getTodayStep(){
@@ -76,6 +78,7 @@ public class Database extends SQLiteOpenHelper {
         if (c.getCount()!= 0){
             ret = c.getInt(1);
         }
+        c.close();
         return ret;
     }
     public int getTillBootStep(){
@@ -87,6 +90,7 @@ public class Database extends SQLiteOpenHelper {
         }else{
             getWritableDatabase().execSQL("INSERT INTO " + DB_NAME + " VALUES(" + -1 + "," + (int)0 + ")");
         }
+        c.close();
         return ret;
     }
     public void saveTillBootStep(int value){
@@ -115,6 +119,7 @@ public class Database extends SQLiteOpenHelper {
             all += c.getInt(1);
             c.moveToNext();
         }
+        c.close();
         return (days > 0)? all / days : 0;
     }
     public int getTotalSteps(){
@@ -125,6 +130,7 @@ public class Database extends SQLiteOpenHelper {
             all += c.getInt(1);
             c.moveToNext();
         }
+        c.close();
         return all;
     }
 

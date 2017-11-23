@@ -1,5 +1,6 @@
 package com.example.boldi.stepmanager;
 
+import android.app.ActionBar;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,15 +30,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
-
     PieChart pieChart;
     TextView average;
     TextView total;
     Database db;
+    TextView kcalcount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         db = new Database(this);
 
@@ -46,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
         pieChart.setCenterTextSize(30);
         pieChart.setDragDecelerationEnabled(false);
         pieChart.setTouchEnabled(false);
-        addDataSet(0,1000);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.getLegend().setEnabled(false);
+        addDataSet(db.getTodayStep(),1000);
 
         Button randomData = (Button) findViewById(R.id.randomData);
         Button reset = (Button) findViewById(R.id.reset);
@@ -69,18 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
         average = (TextView) findViewById(R.id.average);
         total = (TextView) findViewById(R.id.total);
-        //TextView stepcount = (TextView) findViewById(R.id.steps);
-        TextView kcalcount = (TextView) findViewById(R.id.kcalText);
+        kcalcount = (TextView) findViewById(R.id.kcalText);
         Intent i = new Intent(this,StepListener.class);
         startService(i);
         Calendar.getInstance().getTime();
-        String asd = String.valueOf(DateToIntConverter.DateToInt(Calendar.getInstance()));
-        Toast.makeText(this, asd, Toast.LENGTH_SHORT).show();
-        String steps = String.valueOf(db.getTodayStep());
-        String kcal = String.valueOf(db.getTodayStep() / 27);
-        //stepcount.setText(steps);
-        kcalcount.setText(kcal + " kcal");
-        //stepcount.setText(db.getTodayStep());
+        String kcal =  String.format("%.1f",(float)db.getTodayStep() / 27f);
+        kcalcount.setText(kcal);
 
         Thread t = new Thread() {
 
@@ -96,11 +94,8 @@ public class MainActivity extends AppCompatActivity {
                                 total.setText(String.valueOf(db.getTotalSteps()));
                                 String steps = String.valueOf(db.getTodayStep());
                                 addDataSet(Integer.parseInt(steps),1000);
-                                //stepcount.setText(steps);
-
-                                TextView kcalcount = (TextView) findViewById(R.id.kcalText);
-                                String kcal = String.valueOf(db.getTodayStep() / 27);
-                                kcalcount.setText(kcal + " kcal");
+                                String kcal = String.format("%.1f",(float)db.getTodayStep() / 27f);
+                                kcalcount.setText(kcal);
                             }
                         });
                     }
@@ -114,23 +109,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addDataSet(int steps, int goal) {
-
+        boolean overstepped = false;
+        int pair = 0;
         pieChart.setCenterText((String.valueOf(steps)+" / "+String.valueOf(goal)));
         ArrayList<PieEntry> entry = new ArrayList<>();
         ArrayList<String> data = new ArrayList<>();
-
-        entry.add(new PieEntry(steps,0));
-        entry.add(new PieEntry(goal,1));
-
+        int overstep= 0;
+        int goalHelp = goal - steps;
+        if (steps > goal){
+            overstep = steps - goal;
+            goalHelp = 0;
+            while(overstep-goal >0){
+                overstep-= goal;
+                pair ++;
+            }
+            steps = goal-(overstep);
+            overstepped = true;
+        }
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        if (overstepped){
+            if(pair % 2 ==0) {
+                entry.add(new PieEntry(overstep, 0));
+                entry.add(new PieEntry(steps, 1));
+                entry.add(new PieEntry(goalHelp, 2));
+                colors.add(Color.rgb(114,136,226));
+                colors.add(Color.rgb(115,250,90)); //lightgreen
+                colors.add(Color.rgb(251,150,89));
+            }else{
+                entry.add(new PieEntry(overstep, 0));
+                entry.add(new PieEntry(steps, 1));
+                entry.add(new PieEntry(goalHelp, 2));
+                colors.add(Color.rgb(115,250,90));//lightgreen
+                colors.add(Color.rgb(114,136,226));
+                colors.add(Color.rgb(251,150,89));
+            }
+        }
+        else{
+            entry.add(new PieEntry(overstep, 0));
+            entry.add(new PieEntry(steps, 1));
+            entry.add(new PieEntry(goalHelp, 2));
+            colors.add(Color.rgb(114,136,226));
+            colors.add(Color.rgb(115,250,90)); //lightgreen
+            colors.add(Color.rgb(251,150,89));
+        }
         PieDataSet dataset = new PieDataSet(entry,"Steps");
-        dataset.setSliceSpace(2f);
+        dataset.setSliceSpace(0f);
         dataset.setValueTextSize(0f);
 
         Legend legend = pieChart.getLegend();
         legend.setForm(Legend.LegendForm.CIRCLE);
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add(Color.GREEN);
-        colors.add(Color.RED);
         dataset.setColors(colors);
 
         PieData pieData = new PieData(dataset);
