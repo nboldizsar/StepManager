@@ -146,7 +146,7 @@ public class Database extends SQLiteOpenHelper {
         c.moveToFirst();
         if (c.getCount()!= 0){
             int j = 0;
-            for (int i = date-7; i < date; i++){
+            for (int i = date-7; i < date+1; i++){
                 c.moveToFirst();
                 do {
                     int proba = c.getInt(0);
