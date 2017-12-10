@@ -9,6 +9,7 @@ import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Set;
 
 /**
  * Created by Kristóf on 11/11/2017.
@@ -17,6 +18,7 @@ import java.util.Calendar;
 public class Database extends SQLiteOpenHelper {
     private static final int DB_VER = 1;
     private static final String DB_NAME = "steps";
+    private static final String SETTINGS_NAME = "settings";
 
     public Database getInstance(final Context c) {
         if (instance == null) {
@@ -34,6 +36,7 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + DB_NAME + " (date INTEGER, steps INTEGER)");
+        db.execSQL("CREATE TABLE " + SETTINGS_NAME + " (weight INTEGER, goal INTEGER)");
     }
 
     @Override
@@ -158,5 +161,52 @@ public class Database extends SQLiteOpenHelper {
         c.close();
         return barEntries;
     }
+
+    public void saveSettings(int weight, int goal)
+    {
+        Cursor c = getReadableDatabase().query(SETTINGS_NAME, new String[]{"weight","goal"},"goal IS NOT NULL", null,null,null,null);
+        if(c.getCount() == 0)
+        {
+            getWritableDatabase().execSQL("INSERT INTO "+SETTINGS_NAME+" VALUES("+weight+","+goal+")");
+        }
+        else
+        {
+            getWritableDatabase().execSQL("UPDATE "+SETTINGS_NAME+" SET weight = "+weight);
+            getWritableDatabase().execSQL("UPDATE "+SETTINGS_NAME+" SET goal = "+goal);
+        }
+    }
+
+    public int getWeight(){
+
+        int nulla = 0;
+        Cursor c = getReadableDatabase().query(SETTINGS_NAME, new String[]{"weight"},"weight = ?", new String[]{String.valueOf(nulla)},null,null,null);
+        if(c.getCount() ==0)
+        {
+            return 0;
+        }
+        else
+        {
+            c.moveToFirst();
+            int ret = c.getInt(1);
+            return ret;
+        }
+    }
+
+    public int getGoal(){
+
+        int nulla = 0;
+        Cursor c = getReadableDatabase().query(SETTINGS_NAME, new String[]{"goal"},"goal = ?", new String[]{String.valueOf(nulla)},null,null,null);
+        if(c.getCount() ==0)
+        {
+            return 0;
+        }
+        else
+        {
+            c.moveToFirst();
+            int ret = c.getInt(1);
+            return ret;
+        }
+    }
+
 
 }
