@@ -37,5 +37,17 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        Button resetButt = (Button) findViewById(R.id.resetButton);
+
+        resetButt.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        db.resetAllData();
+                    }
+                }
+        );
+
     }
 }
