@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.mikephil.charting.data.BarEntry;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -132,6 +135,28 @@ public class Database extends SQLiteOpenHelper {
         }
         c.close();
         return all;
+    }
+    public ArrayList<BarEntry> getLastSevenDaySteps(int date){
+        date = 20171128;
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},null, null,null,null,null);
+        c.moveToFirst();
+        if (c.getCount()!= 0){
+            int j = 0;
+            for (int i = date; i > date-7; i--){
+                c.moveToFirst();
+                do {
+                    int proba = c.getInt(0);
+                    if (c.getInt(0) == i){
+                        j++;
+                        int steps = c.getInt(1);
+                        barEntries.add(new BarEntry((float) c.getInt(1),j));
+                    }
+                }while(c.moveToNext());
+            }
+        }
+        c.close();
+        return barEntries;
     }
 
 }

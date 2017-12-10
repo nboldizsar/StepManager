@@ -1,6 +1,7 @@
 package com.example.boldi.stepmanager;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
@@ -68,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         //db.resetAllData();
-                        //StaticsActivity statics = new StaticsActivity();
-                        //statics.onCreate();
+                        staticsClick();
                     }
                 }
         );
@@ -176,7 +176,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
    public void actBarClick(MenuItem item) {
-        //Intent intent = new Intent(this, SettingsActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+    public void staticsClick() {
+        Intent intent = new Intent(this, StaticsActivity.class);
+        startActivity(intent);
     }
 }

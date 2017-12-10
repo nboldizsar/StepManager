@@ -11,8 +11,18 @@ public final class DateToIntConverter {
     public static int DateToInt(Calendar date){
         String dateint = "";
         dateint += date.get(Calendar.YEAR);
-        dateint += date.get(Calendar.MONTH);
-        dateint += date.get(Calendar.DAY_OF_MONTH);
+        int mounth =date.get(Calendar.MONTH);
+        if (mounth < 10){
+            dateint+= "0"+mounth;
+        }else{
+            dateint+=mounth;
+        }
+        int day =date.get(Calendar.DAY_OF_MONTH);
+        if (day < 10){
+            dateint+= "0"+day;
+        }else{
+            dateint+=day;
+        }
         return Integer.parseInt(dateint);
     }
     public static Calendar IntToDate(int dateint){
