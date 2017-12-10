@@ -14,7 +14,7 @@ public class BootListener extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
-        SharedPreferences prefs = context.getSharedPreferences("pedometer", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("stepmanager", Context.MODE_PRIVATE);
         context.startService(new Intent(context, StepListener.class));
     }
 }
