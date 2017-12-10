@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        db.resetAllData();
+                        //db.resetAllData();
+                        //StaticsActivity statics = new StaticsActivity();
+                        //statics.onCreate();
                     }
                 }
         );
@@ -173,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void actBarClick(MenuItem item) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+   public void actBarClick(MenuItem item) {
+        //Intent intent = new Intent(this, SettingsActivity.class);
+        //startActivity(intent);
     }
 }
