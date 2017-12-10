@@ -59,6 +59,7 @@ public class StaticsActivity extends AppCompatActivity {
 
         BarData BD = new BarData(BDS);
         barChart.setData(BD);
+        barChart.setTouchEnabled(false);
     }
     @Override
     protected void onStart() {

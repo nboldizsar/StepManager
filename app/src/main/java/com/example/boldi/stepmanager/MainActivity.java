@@ -1,7 +1,6 @@
 package com.example.boldi.stepmanager;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;

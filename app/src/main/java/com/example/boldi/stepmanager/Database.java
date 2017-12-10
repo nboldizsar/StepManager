@@ -140,20 +140,20 @@ public class Database extends SQLiteOpenHelper {
         return all;
     }
     public ArrayList<BarEntry> getLastSevenDaySteps(int date){
-        date = 20171128;
+        //date = 201710;
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         Cursor c = getReadableDatabase().query(DB_NAME,new String[]{"date", "steps"},null, null,null,null,null);
         c.moveToFirst();
         if (c.getCount()!= 0){
             int j = 0;
-            for (int i = date; i > date-7; i--){
+            for (int i = date-7; i < date; i++){
                 c.moveToFirst();
                 do {
                     int proba = c.getInt(0);
                     if (c.getInt(0) == i){
                         j++;
                         int steps = c.getInt(1);
-                        barEntries.add(new BarEntry((float) c.getInt(1),j));
+                        barEntries.add(new BarEntry(j,c.getInt(1)));
                     }
                 }while(c.moveToNext());
             }
