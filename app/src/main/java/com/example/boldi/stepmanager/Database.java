@@ -107,7 +107,8 @@ public class Database extends SQLiteOpenHelper {
         Calendar c = Calendar.getInstance();
                c.add(Calendar.DAY_OF_MONTH, -(dayMinus+1));
         for (int i = 0; i < dayMinus; i++){
-            c.add(Calendar.DAY_OF_MONTH, i);
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            int seg = DateToIntConverter.DateToInt(c);
             saveRandomStep(stepsOfDay[i],DateToIntConverter.DateToInt(c));
         }
     }
