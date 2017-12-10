@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
    public void actBarClick(MenuItem item) {
-        //Intent intent = new Intent(this, SettingsActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }
