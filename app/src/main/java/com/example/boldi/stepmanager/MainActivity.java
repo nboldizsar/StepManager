@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,16 +32,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String PREFNAME = "setting";
+    private static final String Weight_NAME = "weight";
+    private static final String DAILYGOAL_NAME = "goal";
+
+
     PieChart pieChart;
     TextView average;
     TextView total;
     Database db;
     TextView kcalcount;
+    int weight;
+    int goal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SetSettings();
 
         db = new Database(this);
 
@@ -51,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         pieChart.setTouchEnabled(false);
         pieChart.getDescription().setEnabled(false);
         pieChart.getLegend().setEnabled(false);
-        addDataSet(db.getTodayStep(),1000);
+        addDataSet(db.getTodayStep(),goal);
 
         Button randomData = (Button) findViewById(R.id.randomData);
         Button reset = (Button) findViewById(R.id.reset);
@@ -95,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 average.setText(String.valueOf(db.getAvarageSteps()));
                                 total.setText(String.valueOf(db.getTotalSteps()));
                                 String steps = String.valueOf(db.getTodayStep());
-                                addDataSet(Integer.parseInt(steps),1000);
+                                addDataSet(Integer.parseInt(steps),goal);
                                 String kcal = String.format("%.1f",(float)db.getTodayStep() / 27f);
                                 kcalcount.setText(kcal);
                             }
@@ -169,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        SetSettings();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbar1, menu);
         return true;
@@ -181,5 +197,17 @@ public class MainActivity extends AppCompatActivity {
     public void staticsClick() {
         Intent intent = new Intent(this, StaticsActivity.class);
         startActivity(intent);
+    }
+
+    private void SetSettings()
+    {
+        SharedPreferences settings = getSharedPreferences(PREFNAME, 0);
+        weight = settings.getInt(Weight_NAME, 0);
+        goal = settings.getInt(DAILYGOAL_NAME, 0);
+
+        if(weight == 0)
+            weight = 60;
+        if(goal == 0)
+            goal = 5000;
     }
 }
