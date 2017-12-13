@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        db.UploadWithUnrealData( new int[]{120,150,960,6281,342,1412,6234});
+                        db.UploadWithUnrealData( new int[]{120,150,960,6281,342,1412,6234,214,124,523,34,2,35,345,346,345,23423,423,234,234,234234,123123,123,123,123,123});
                     }
                 }
         );

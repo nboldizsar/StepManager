@@ -28,11 +28,13 @@ public class StaticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.statics);
         database = new Database(this);
-        int today = DateToIntConverter.DateToInt(Calendar.getInstance());
         dateSetListenerEnd = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 btnEnd.setText(year+"."+month+"."+day+".");
+                year=year*10000+month*100+day;
+                barChart.clear();
+                setBarChart(barChart, year);
             }
         };
 

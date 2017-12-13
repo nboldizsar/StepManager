@@ -29,9 +29,13 @@ public final class DateToIntConverter {
         Calendar date = Calendar.getInstance();
         if(dateint >10000000 || dateint <99999999){
             String datestring =String.valueOf(dateint);
-            date.set(Calendar.YEAR,Integer.parseInt(datestring.substring(0,3)));
-            date.set(Calendar.MONTH,Integer.parseInt(datestring.substring(4,5)));
-            date.set(Calendar.DAY_OF_MONTH,Integer.parseInt(datestring.substring(6,7)));
+            String seg = "";
+            seg = datestring.substring(4,6);
+            seg = datestring.substring(6,8);
+            date.set(Calendar.YEAR,Integer.parseInt(datestring.substring(0,4)));
+
+            date.set(Calendar.MONTH,Integer.parseInt(datestring.substring(4,6)));
+            date.set(Calendar.DAY_OF_MONTH,Integer.parseInt(datestring.substring(6,8)));
         }
         return date;
     }

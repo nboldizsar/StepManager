@@ -147,16 +147,23 @@ public class Database extends SQLiteOpenHelper {
         c.moveToFirst();
         if (c.getCount()!= 0){
             int j = 0;
-            for (int i = date-7; i < date+1; i++){
+            Calendar cal = DateToIntConverter.IntToDate(date);
+            cal.add(Calendar.DAY_OF_MONTH, -7);
+            for (int i = 0; i < 7; i++){
                 c.moveToFirst();
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                int dateint = DateToIntConverter.DateToInt(cal);
                 do {
-                    int proba = c.getInt(0);
-                    if (c.getInt(0) == i){
+                    if (c.getInt(0) == dateint){
                         j++;
-                        int steps = c.getInt(1);
                         barEntries.add(new BarEntry(j,c.getInt(1)));
                     }
                 }while(c.moveToNext());
+                if (barEntries.size() <i+1){
+                    j++;
+                    barEntries.add(new BarEntry(j,0));
+                }
+
             }
         }
         c.close();
